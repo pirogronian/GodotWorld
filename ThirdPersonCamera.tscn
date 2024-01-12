@@ -1,0 +1,40 @@
+[gd_scene load_steps=4 format=3 uid="uid://dykrnab4e7ufa"]
+
+[ext_resource type="Environment" uid="uid://bc4e0ejmkd221" path="res://NewGames/DefaultNew.tres" id="1"]
+[ext_resource type="Script" path="res://ThirdPersonCamera.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://cyf5y5g1uym88" path="res://VectorInfo.tscn" id="3"]
+
+[node name="ThirdPersonCameraRoot" type="Node3D"]
+script = ExtResource("2")
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.95944)
+environment = ExtResource("1")
+far = 8172.0
+
+[node name="InfoContainer" type="VBoxContainer" parent="Camera"]
+visible = false
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+
+[node name="PositionHead" type="Label" parent="Camera/InfoContainer"]
+layout_mode = 2
+text = "Position:"
+
+[node name="Pos" parent="Camera/InfoContainer" instance=ExtResource("3")]
+layout_mode = 2
+
+[node name="OrientationHead" type="Label" parent="Camera/InfoContainer"]
+layout_mode = 2
+text = "Orientation:"
+
+[node name="Ori" parent="Camera/InfoContainer" instance=ExtResource("3")]
+layout_mode = 2
+
+[node name="PosVHead" type="Label" parent="Camera/InfoContainer"]
+layout_mode = 2
+text = "Lin velocity:"
+
+[node name="LinVel" parent="Camera/InfoContainer" instance=ExtResource("3")]
+layout_mode = 2

@@ -1,0 +1,122 @@
+[gd_scene load_steps=16 format=3 uid="uid://drpedabiy0ngk"]
+
+[ext_resource type="Script" path="res://NewGames/DefaultNew2.gd" id="1_37kt7"]
+[ext_resource type="Script" path="res://common/FreeCamera3D.gd" id="1_y2hp1"]
+[ext_resource type="Script" path="res://common/CameraSwitcher.gd" id="3_sqbxd"]
+[ext_resource type="Texture2D" uid="uid://dqg1q3qi5d5hq" path="res://icon.png" id="4_7ghpf"]
+[ext_resource type="PackedScene" uid="uid://dykrnab4e7ufa" path="res://ThirdPersonCamera.tscn" id="4_tci8i"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_mkqd5"]
+resource_local_to_scene = true
+rayleigh_color = Color(0.717647, 0.784314, 0.901961, 1)
+ground_color = Color(0.0823529, 0.054902, 0.0235294, 1)
+energy_multiplier = 5.41
+
+[sub_resource type="Sky" id="Sky_0cowi"]
+sky_material = SubResource("PhysicalSkyMaterial_mkqd5")
+
+[sub_resource type="Environment" id="Environment_5vwch"]
+resource_local_to_scene = true
+resource_name = "DefaultNew2Environment"
+background_mode = 2
+sky = SubResource("Sky_0cowi")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_thyob"]
+size = Vector2(5, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xf6im"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4oexv"]
+albedo_texture = ExtResource("4_7ghpf")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_nywga"]
+material = SubResource("StandardMaterial3D_4oexv")
+size = Vector2(100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_taaql"]
+emission_enabled = true
+emission = Color(0.815686, 0.47451, 0.513726, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ukqod"]
+material = SubResource("StandardMaterial3D_taaql")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ohtmv"]
+
+[node name="DefaultNew2" type="Node3D"]
+script = ExtResource("1_37kt7")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_5vwch")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.651081, -2.0715)
+visible = false
+mesh = SubResource("PlaneMesh_thyob")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.0787897, 0.996891, 0, -0.996891, -0.0787897, 0, 1.62466, 0)
+
+[node name="FreeCamera3D" type="Camera3D" parent="."]
+script = ExtResource("1_y2hp1")
+
+[node name="CameraSwitcher" type="Node" parent="."]
+script = ExtResource("3_sqbxd")
+
+[node name="Generic6DOFJoint3D" type="Generic6DOFJoint3D" parent="."]
+visible = false
+exclude_nodes_from_collision = false
+linear_limit_x/softness = 0.1
+linear_limit_x/restitution = 0.1
+linear_limit_y/softness = 0.1
+linear_limit_y/restitution = 0.1
+linear_limit_z/softness = 0.1
+linear_limit_z/restitution = 0.1
+angular_limit_x/enabled = false
+angular_limit_x/upper_angle = 1.5708
+angular_limit_x/lower_angle = 0.785398
+angular_limit_y/enabled = false
+angular_limit_z/enabled = false
+angular_motor_x/enabled = true
+angular_motor_x/target_velocity = 1.0
+angular_motor_x/force_limit = 10000.0
+angular_spring_x/stiffness = 1.0
+angular_spring_x/damping = 1.0
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_xf6im")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("PlaneMesh_nywga")
+
+[node name="ThirdPersonCamera" parent="." instance=ExtResource("4_tci8i")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6796, 2.13979)
+target_path = NodePath("../TestRigidBody2/HingeJoint3D")
+
+[node name="TestRigidBody" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.09167, -3.76508)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestRigidBody"]
+mesh = SubResource("BoxMesh_ukqod")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestRigidBody"]
+shape = SubResource("BoxShape3D_ohtmv")
+
+[node name="TestRigidBody2" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.10819, 0.718557, -3.76508)
+constant_torque = Vector3(0, 10, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestRigidBody2"]
+mesh = SubResource("BoxMesh_ukqod")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestRigidBody2"]
+shape = SubResource("BoxShape3D_ohtmv")
+
+[node name="HingeJoint3D" type="HingeJoint3D" parent="TestRigidBody2"]
+node_a = NodePath("../../TestRigidBody")
+node_b = NodePath("..")
+motor/enable = true
+motor/target_velocity = 3.14159

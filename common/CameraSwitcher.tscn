@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bdeo3lyvpupxp"]
+
+[ext_resource type="Script" path="res://common/CameraSwitcher.gd" id="1_gfo8m"]
+
+[node name="CameraSwitcher" type="Node"]
+script = ExtResource("1_gfo8m")

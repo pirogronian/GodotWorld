@@ -1,0 +1,221 @@
+[gd_scene load_steps=23 format=3 uid="uid://bcg7sw05cky8m"]
+
+[ext_resource type="Script" path="res://NewGames/DefaultNew.gd" id="1"]
+[ext_resource type="Script" path="res://Camera.gd" id="2"]
+[ext_resource type="Script" path="res://GravityCenter.gd" id="3"]
+[ext_resource type="Environment" uid="uid://bc4e0ejmkd221" path="res://NewGames/DefaultNew.tres" id="4"]
+[ext_resource type="Script" path="res://Player.gd" id="5"]
+[ext_resource type="Script" path="res://TransformInfoWindow.gd" id="6"]
+[ext_resource type="Script" path="res://Device.gd" id="7"]
+[ext_resource type="PackedScene" uid="uid://dykrnab4e7ufa" path="res://ThirdPersonCamera.tscn" id="8"]
+[ext_resource type="Script" path="res://common/CameraSwitcher.gd" id="9_cbv45"]
+
+[sub_resource type="SphereShape3D" id="6"]
+radius = 0.2
+
+[sub_resource type="SphereMesh" id="5"]
+radius = 0.2
+height = 0.4
+
+[sub_resource type="PhysicsMaterial" id="7"]
+rough = true
+bounce = 0.01
+
+[sub_resource type="SphereShape3D" id="1"]
+
+[sub_resource type="SphereMesh" id="3"]
+
+[sub_resource type="SphereMesh" id="16"]
+radius = 30.0
+height = 60.0
+
+[sub_resource type="SphereMesh" id="21"]
+radius = 30.0
+height = 60.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vc7hp"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_up8uy"]
+resource_local_to_scene = true
+seamless = true
+seamless_blend_skirt = 0.106
+normalize = false
+noise = SubResource("FastNoiseLite_vc7hp")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1whcj"]
+albedo_color = Color(0.592157, 1, 1, 1)
+albedo_texture = SubResource("NoiseTexture2D_up8uy")
+
+[sub_resource type="PhysicsMaterial" id="28"]
+bounce = 0.01
+
+[sub_resource type="BoxShape3D" id="25"]
+margin = 0.005
+size = Vector3(0.02, 0.02, 0.02)
+
+[sub_resource type="BoxMesh" id="26"]
+size = Vector3(0.02, 0.02, 0.02)
+
+[node name="DefaultNew" type="Node3D"]
+script = ExtResource("1")
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(-1, 8.57182e-08, -1.24307e-07, 0, 0.823245, 0.567686, 1.50996e-07, 0.567686, -0.823245, 2.85358e-06, -93.0201, -5.65997)
+environment = ExtResource("4")
+script = ExtResource("2")
+has_input = false
+
+[node name="Msg" type="Label" parent="Camera"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+
+[node name="NameTitle" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.55935)
+text = "Simple text"
+
+[node name="Label" type="Label" parent="."]
+
+[node name="Body2" type="RigidBody3D" parent="." groups=["GravityAcceptors"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.038, -96, 0)
+mass = 0.102041
+can_sleep = false
+linear_velocity = Vector3(2.8, 0, 0)
+
+[node name="CollisionShape" type="CollisionShape3D" parent="Body2"]
+shape = SubResource("6")
+
+[node name="MeshInstance" type="MeshInstance3D" parent="Body2"]
+mesh = SubResource("5")
+
+[node name="GravityCenter" type="Node3D" parent="Body2"]
+script = ExtResource("3")
+gravity_multiplier = 0.1
+
+[node name="Body1" type="RigidBody3D" parent="." groups=["GravityAcceptors"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, 0)
+physics_material_override = SubResource("7")
+can_sleep = false
+linear_velocity = Vector3(2.3, 0, 0)
+
+[node name="CollisionShape" type="CollisionShape3D" parent="Body1"]
+shape = SubResource("1")
+
+[node name="MeshInstance" type="MeshInstance3D" parent="Body1"]
+mesh = SubResource("3")
+
+[node name="GravityCenter" type="Node3D" parent="Body1"]
+script = ExtResource("3")
+
+[node name="Sun" type="Node3D" parent="."]
+visible = false
+
+[node name="SunLamp" type="OmniLight3D" parent="Sun"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+visible = false
+shadow_enabled = true
+shadow_bias = 10.0
+shadow_reverse_cull_face = true
+omni_range = 500.0
+omni_shadow_mode = 0
+
+[node name="MeshInstance" type="MeshInstance3D" parent="Sun"]
+visible = false
+cast_shadow = 0
+mesh = SubResource("16")
+
+[node name="DirectionalLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+
+[node name="GasGiant" type="Node3D" parent="."]
+
+[node name="MeshInstance" type="MeshInstance3D" parent="GasGiant"]
+mesh = SubResource("21")
+surface_material_override/0 = SubResource("StandardMaterial3D_1whcj")
+
+[node name="GravityCenter" type="Node3D" parent="GasGiant"]
+script = ExtResource("3")
+gravity_multiplier = 500.0
+
+[node name="Player" type="RigidBody3D" parent="." groups=["GravityAcceptors"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -98.9, 0)
+mass = 0.01
+physics_material_override = SubResource("28")
+linear_velocity = Vector3(2.3, 0, 0)
+script = ExtResource("5")
+
+[node name="CollisionShape" type="CollisionShape3D" parent="Player"]
+shape = SubResource("25")
+
+[node name="MeshInstance" type="MeshInstance3D" parent="Player"]
+mesh = SubResource("26")
+
+[node name="Camera" type="Camera3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.113008)
+environment = ExtResource("4")
+current = true
+far = 8192.0
+
+[node name="MotionResourceLabel" type="Label" parent="Player"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="TransformInfoWindow" type="AcceptDialog" parent="Player"]
+script = ExtResource("6")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Player/TransformInfoWindow"]
+
+[node name="LocalTransformLabel" type="Label" parent="Player/TransformInfoWindow/VBoxContainer"]
+layout_mode = 2
+text = "Local transform"
+
+[node name="GridContainer" type="GridContainer" parent="Player/TransformInfoWindow/VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="XRot" type="Label" parent="Player/TransformInfoWindow/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="XTr" type="Label" parent="Player/TransformInfoWindow/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="YRot" type="Label" parent="Player/TransformInfoWindow/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="YTr" type="Label" parent="Player/TransformInfoWindow/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="ZRot" type="Label" parent="Player/TransformInfoWindow/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="ZTr" type="Label" parent="Player/TransformInfoWindow/VBoxContainer/GridContainer"]
+layout_mode = 2
+
+[node name="GlobalTransformLabel2" type="Label" parent="Player/TransformInfoWindow/VBoxContainer"]
+layout_mode = 2
+text = "Global transform"
+
+[node name="Device" type="Node" parent="Player"]
+script = ExtResource("7")
+
+[node name="Cams" type="Node" parent="."]
+
+[node name="ThirdPersonCameraRoot" parent="Cams" instance=ExtResource("8")]
+target_path = NodePath("../../Body1")
+
+[node name="ThirdPersonCameraRoot2" parent="Cams" instance=ExtResource("8")]
+target_path = NodePath("../../Body2")
+
+[node name="ThirdPersonCameraRoot3" parent="Cams" instance=ExtResource("8")]
+target_path = NodePath("../../Player")
+
+[node name="CameraSwitcher" type="Node" parent="."]
+script = ExtResource("9_cbv45")

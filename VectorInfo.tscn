@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://cyf5y5g1uym88"]
+
+[ext_resource type="Script" path="res://VectorInfo.gd" id="1"]
+
+[node name="VectorInfo" type="GridContainer"]
+columns = 2
+script = ExtResource("1")
+
+[node name="XC" type="Label" parent="."]
+layout_mode = 2
+text = "X:"
+
+[node name="XV" type="Label" parent="."]
+layout_mode = 2
+
+[node name="YC" type="Label" parent="."]
+layout_mode = 2
+text = "Y:"
+
+[node name="YV" type="Label" parent="."]
+layout_mode = 2
+
+[node name="ZC" type="Label" parent="."]
+layout_mode = 2
+text = "Z:"
+
+[node name="ZV" type="Label" parent="."]
+layout_mode = 2
+
+[node name="LC" type="Label" parent="."]
+layout_mode = 2
+text = "L:"
+
+[node name="LV" type="Label" parent="."]
+layout_mode = 2
