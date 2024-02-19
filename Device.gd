@@ -26,19 +26,23 @@ enum TransportType { Generic, Pipe, Wire, Fiber, Max }
 var slot_types : Array
 
 func _init():
+	print("Creating transport type arrays...")
 	slot_types.resize(TransportType.Max)
 	slot_types[TransportType.Generic] = []
 	slot_types[TransportType.Pipe] = []
 	slot_types[TransportType.Wire] = []
 	slot_types[TransportType.Fiber] = []
+	print("Created types number: %d" % slot_types.size())
 
 func get_slots_by_type(t : int):
-	if t >= slot_types.size():
+	if t < 0 or t >= slot_types.size():
 		print("Wrong slot type! (%d)" % t)
 		return null
 	return slot_types[t]
 
 func get_slot_info(type : int, num : int) -> SlotInfo:
+	if type < 0 or type >= slot_types.size():
+		return null
 	var slots = slot_types[type]
 	if slots == null:
 		return null

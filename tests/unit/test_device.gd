@@ -61,20 +61,27 @@ func test_hub_connections():
 	assert_true(h1.connect_device_slot(d1, 0, "TestConnection"))
 	assert_true(h1.get_device_connections_number() == 1)
 
+func test_empty_device_slots():
+	var d1 = Device.new()
+	assert_eq(d1.add_slot(Device.TransportType.Generic, false), true)
+	assert_eq(d1.add_slot(Device.TransportType.Generic, true), true)
+	assert_eq(d1.get_slots_number(Device.TransportType.Generic), 2)
+
 func test_device_registers():
+	print("GUT test: TestDevice")
 	var TDev = load("res://tests/TestDevice.gd")
 	var td = TDev.new()
 	var t_g = Device.TransportType.Generic
 	var t_p = Device.TransportType.Pipe
 	var t_w = Device.TransportType.Wire
 	var t_f = Device.TransportType.Fiber
-	assert_true(td.get_slots_number(Device.TransportType.Generic) == 0)
-	assert_true(td.get_slots_number(Device.TransportType.Pipe) == 2)
-	assert_true(td.get_slots_number(Device.TransportType.Wire) == 2)
-	assert_true(td.get_slots_number(Device.TransportType.Fiber) == 1)
+	assert_eq(td.get_slots_number(Device.TransportType.Generic), 0)
+	assert_eq(td.get_slots_number(Device.TransportType.Pipe), 2)
+	assert_eq(td.get_slots_number(Device.TransportType.Wire), 2)
+	assert_eq(td.get_slots_number(Device.TransportType.Fiber), 1)
 	assert_true(td.is_register_readonly(Device.TransportType.Pipe, 0, "Reg1"))
-	assert_true(td.is_register_readonly(Device.TransportType.Pipe, 1, "Reg1") == false)
-	assert_true(td.is_register_readonly(Device.TransportType.Fiber, 0, "Reg1") == false)
+	assert_eq(td.is_register_readonly(Device.TransportType.Pipe, 1, "Reg1"), false)
+	assert_eq(td.is_register_readonly(Device.TransportType.Fiber, 0, "Reg1"), false)
 	assert_true(td.is_register_readonly(Device.TransportType.Pipe, 0, "Reg3"))
 	assert_true(td.is_register_readonly(Device.TransportType.Pipe, 0, "Reg4"))
 	assert_true(td.is_register_readonly(Device.TransportType.Pipe, 3, "Reg1"))

@@ -1,18 +1,20 @@
 extends Device
 
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 var reg1_val : int = 1
 var reg2_val : String = "String wartość"
 
 func _init():
+	super()
+	print("TestDevice init...")
 	add_slot(TransportType.Pipe, false)
 	add_slot(TransportType.Pipe, true)
 	add_slot(TransportType.Wire, true)
 	add_slot(TransportType.Wire, false)
 	add_slot(TransportType.Fiber, true)
+	print("TestDevice initiated.")
+	print("Pipe slots: %d" % get_slots_number(TransportType.Pipe))
+	print("Wire slots: %d" % get_slots_number(TransportType.Wire))
+	print("Fiber slots: %d" % get_slots_number(TransportType.Fiber))
 
 func get_register_value(_slot_type : int, _slot_num : int, _reg_name : String):
 	match _reg_name:
