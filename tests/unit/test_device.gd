@@ -53,7 +53,7 @@ func test_empty_registers():
 
 func test_hub_connections():
 	var d1 = Device.new()
-	var h1 = Device.DeviceHub.new(Device.TransportType.Wire)
+	var h1 = DeviceHub.new(Device.TransportType.Wire)
 	d1.add_slot(Device.TransportType.Wire, false)
 	d1.add_slot(Device.TransportType.Wire, true)
 	assert_true(h1.get_transport_type() == Device.TransportType.Wire)
