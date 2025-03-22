@@ -1,14 +1,14 @@
 [gd_scene load_steps=23 format=3 uid="uid://bcg7sw05cky8m"]
 
-[ext_resource type="Script" path="res://NewGames/DefaultNew.gd" id="1"]
-[ext_resource type="Script" path="res://Camera.gd" id="2"]
-[ext_resource type="Script" path="res://GravityCenter.gd" id="3"]
+[ext_resource type="Script" uid="uid://bpm0xfqjrykuv" path="res://NewGames/DefaultNew.gd" id="1"]
+[ext_resource type="Script" uid="uid://6odxabkxuv4l" path="res://Camera.gd" id="2"]
+[ext_resource type="Script" uid="uid://b843mirqymcmy" path="res://GravityCenter.gd" id="3"]
 [ext_resource type="Environment" uid="uid://bc4e0ejmkd221" path="res://NewGames/DefaultNew.tres" id="4"]
-[ext_resource type="Script" path="res://Player.gd" id="5"]
-[ext_resource type="Script" path="res://TransformInfoWindow.gd" id="6"]
-[ext_resource type="Script" path="res://Device.gd" id="7"]
+[ext_resource type="Script" uid="uid://d162vt35vuown" path="res://Player.gd" id="5"]
+[ext_resource type="Script" uid="uid://d2a7mxtexou83" path="res://TransformInfoWindow.gd" id="6"]
+[ext_resource type="Script" uid="uid://bkqv5njq8o1mm" path="res://Device.gd" id="7"]
 [ext_resource type="PackedScene" uid="uid://dykrnab4e7ufa" path="res://ThirdPersonCamera.tscn" id="8"]
-[ext_resource type="Script" path="res://common/CameraSwitcher.gd" id="9_cbv45"]
+[ext_resource type="Script" uid="uid://dp3q06bv3rp60" path="res://common/CameraSwitcher.gd" id="9_cbv45"]
 
 [sub_resource type="SphereShape3D" id="6"]
 radius = 0.2

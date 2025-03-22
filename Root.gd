@@ -111,7 +111,7 @@ func onLoadFromFileAccepted():
 	var path = dialog.get_current_path()
 #	var file = dialog.get_current_file()
 #	var dir = dialog.get_current_dir()
-#	print(path)
+	print(path)
 #	print(file)
 #	print(dir)
 	if doLoadFromFile(path):
@@ -127,6 +127,7 @@ func doLoadFromFile(path):
 	var scene = ps.instantiate()
 #	get_node("Loaded").add_child(scene)
 	attatchLoadedScene(scene)
+	scene.propagate_call("game_loaded")
 	return true
 
 #func doLoadFromFileDelayed(path):
@@ -174,6 +175,7 @@ func doSaveToFile(path : String):
 	if scene == null:
 		print("No scene loaded, what do you want to save??!")
 		return false
+	scene.propagate_call("game_saving")
 	var ps = PackedScene.new()
 	ps.pack(scene)
 #	var err = ResourceSaver.save(ps, path, SaveFlags)
