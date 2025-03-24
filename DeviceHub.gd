@@ -7,7 +7,7 @@ class DeviceConnection:
 	func _init(dev : Device, s_num : int):
 		device = dev
 		slot_num = s_num
-var type : int
+@export var type : int
 var connections : Dictionary
 var network_neighbours : Dictionary = {}
 var network_nodes : Dictionary = { self : true }
@@ -147,6 +147,7 @@ func game_loaded():
 	for conname in saved_device_connections:
 		var conrest = saved_device_connections[conname]
 		var dev = get_node(conrest["device"])
+		dev.game_loaded()  # This is needed for proper loading order
 		var slot = conrest["slot"]
 		connect_device_slot(dev, slot, conname)
 
@@ -157,4 +158,4 @@ func game_saving():
 	
 	for conname in connections:
 		var connection = connections[conname]
-		saved_device_connections[conname] = { "device" : connection.dev.get_path(), "slot" : connection.slot }
+		saved_device_connections[conname] = { "device" : connection.device.get_path(), "slot" : connection.slot_num }

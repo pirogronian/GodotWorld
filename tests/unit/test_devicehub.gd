@@ -91,7 +91,7 @@ func test_network():
 	assert_eq(dh1.has_network_neighbour(dh3), false)
 	assert_eq(dh3.has_network_neighbour(dh1), false)
 	
-func test_saving():
+func test_saving_network():
 	var sc = Node.new()
 	var dh1 = DeviceHub.new(Device.TransportType.Generic)
 	var dh2 = DeviceHub.new(Device.TransportType.Generic)
@@ -152,3 +152,68 @@ func test_saving():
 	assert_true(dh3.has_network_neighbour(dh1))
 	assert_true(dh3.has_network_neighbour(dh4))
 	assert_true(dh4.has_network_neighbour(dh3))
+
+func test_saving_device_connections():
+	print("test_saving_device_connections():")
+	var n = Node.new()
+	var dh := DeviceHub.new(Device.TransportType.Fiber)
+	var TDev = load("res://tests/TestDevice.gd")
+	var td1 = TDev.new()
+	var td2 = TDev.new()
+	var td3 = TDev.new()
+	
+	dh.set_name("dh")
+	td1.set_name("td1")
+	td2.set_name("td2")
+	td3.set_name("td3")
+	n.add_child(dh)
+	n.add_child(td1)
+	n.add_child(td2)
+	n.add_child(td3)
+	dh.set_owner(n)
+	td1.set_owner(n)
+	td2.set_owner(n)
+	td3.set_owner(n)
+	add_child(n)
+	
+	assert_true(dh.connect_device_slot(td1, 0, "TestDevice1Connection"))
+	assert_true(dh.connect_device_slot(td2, 0, "TestDevice2Connection"))
+	
+	n.propagate_call("game_saving")
+	
+	var ps = PackedScene.new()
+	ps.pack(n)
+	remove_child(n)
+	n.queue_free()
+	
+	const path = "user://tests/savingTest.tscn"
+	ResourceSaver.save(ps, path)
+	ps = load(path)
+	n = ps.instantiate()
+	
+	add_child(n)
+	#for node in n.get_children():
+		#print(node)
+	dh = n.get_node("dh")
+	td1 = n.get_node("td1")
+	td2 = n.get_node("td2")
+	td3 = n.get_node("td3")
+	
+	n.propagate_call("game_loaded")
+	
+	assert_true(td1.is_slot_connected(Device.TransportType.Fiber, 0))
+	
+	assert_eq(dh.get_device_connections_number(), 2)
+	
+	var conInfo = dh.get_device_connection("TestDevice1Connection")
+	assert_ne(conInfo, null)
+	if conInfo != null:
+		assert_eq(conInfo.device, td1)
+		assert_eq(conInfo.slot_num, 0)
+	
+	conInfo = dh.get_device_connection("TestDevice2Connection")
+	assert_ne(conInfo, null)
+	if conInfo != null:
+		assert_eq(conInfo.device, td2)
+		assert_eq(conInfo.slot_num, 0)
+	

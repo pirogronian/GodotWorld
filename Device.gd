@@ -25,13 +25,20 @@ enum TransportType { Generic, Pipe, Wire, Fiber, Max }
 
 var slot_types : Array
 
-func _init():
-	#print("Creating transport type arrays...")
+var loaded = false
+
+@export var saved_slot_types : Array
+
+func populateSlotArray():
 	slot_types.resize(TransportType.Max)
 	slot_types[TransportType.Generic] = []
 	slot_types[TransportType.Pipe] = []
 	slot_types[TransportType.Wire] = []
 	slot_types[TransportType.Fiber] = []
+
+func _init():
+	#print("Creating transport type arrays...")
+	populateSlotArray()
 	#print("Created types number: %d" % slot_types.size())
 
 func get_slots_by_type(t : int):
@@ -106,7 +113,7 @@ func is_slot_accepting_data(slot_type : int, slot_num : int) -> bool:
 func is_slot_connected(slot_type : int, slot_num : int) -> bool:
 	var si = get_slot_info(slot_type, slot_num)
 	if si:
-		return si.connected_hub
+		return si.connected_hub != null
 	return false
 
 func get_slots_number(slot_type : int) -> int:
@@ -134,10 +141,22 @@ func unset_connection(slot_type : int, slot_num : int) -> bool:
 		else:
 			return false
 	return false
+	
+func game_saving():
+	saved_slot_types.resize(TransportType.Max)
+	for stype in range(1,TransportType.Max):
+		var slots : Array
+		for slotInfo in slot_types[stype]:
+			slots.append(slotInfo.data_capable)
+		saved_slot_types[stype] = slots
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-# Called when the node enters the scene tree for the first time.
-#func _ready():
-#	pass # Replace with function body.
+func game_loaded():
+	if loaded:  return
+	loaded = true
+	populateSlotArray()
+	for type in range(1, TransportType.Max):
+		# print("Restoring slots by type: ", type)
+		slot_types[type] = Array()
+		for slot in saved_slot_types[type]:
+			# print("  Restoring slot data capable: ", slot)
+			slot_types[type].append(SlotInfo.new(slot))
