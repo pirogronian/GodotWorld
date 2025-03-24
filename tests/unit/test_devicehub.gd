@@ -90,7 +90,19 @@ func test_network():
 	assert_eq(dh2.has_network_neighbour(dh1), false)
 	assert_eq(dh1.has_network_neighbour(dh3), false)
 	assert_eq(dh3.has_network_neighbour(dh1), false)
+
+func test_calling_registers():
+	var dh = DeviceHub.new(Device.TransportType.Pipe)
+	var TDev = load("res://tests/TestDevice.gd")
+	var d = TDev.new()
 	
+	assert_true(dh.connect_device_slot(d, 1, "TestDevConn"))
+	var v = dh.read_from_register("TestDevConn", "Reg1")
+	assert_eq(v, 1)
+	assert_true(dh.write_to_register("TestDevConn", "Reg1", 34))
+	v = dh.read_from_register("TestDevConn", "Reg1")
+	assert_eq(v, 34)
+
 func test_saving_network():
 	var sc = Node.new()
 	var dh1 = DeviceHub.new(Device.TransportType.Generic)

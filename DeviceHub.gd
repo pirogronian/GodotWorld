@@ -59,6 +59,17 @@ func disconnect_device_slot(cname : String) -> bool:
 	connections.erase(cname)
 	return true
 
+func read_from_register(conn : String, reg : String):
+	var conInfo = get_device_connection(conn)
+	if conInfo == null: return
+	return conInfo.device.read_from_register(type, conInfo.slot_num, reg)
+
+func write_to_register(conn : String, reg : String, value):
+	var conInfo = get_device_connection(conn)
+	if conInfo == null: return
+	return conInfo.device.write_to_register(type, conInfo.slot_num, reg, value)
+
+
 func get_network_links_number() -> int:
 	return network_neighbours.size()
 
