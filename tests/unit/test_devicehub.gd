@@ -171,6 +171,13 @@ func test_saving_network():
 	assert_true(dh3.has_network_neighbour(dh1))
 	assert_true(dh3.has_network_neighbour(dh4))
 	assert_true(dh4.has_network_neighbour(dh3))
+	
+	assert_true(dh1.has_network_node(dh1))
+	assert_true(dh1.has_network_node(dh2))
+	assert_true(dh1.has_network_node(dh3))
+	assert_true(dh1.has_network_node(dh4))
+	assert_true(dh2.has_network_node(dh1))
+	assert_true(dh2.has_network_node(dh2))
 
 func test_saving_device_connections():
 	print("test_saving_device_connections():")

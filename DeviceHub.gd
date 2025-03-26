@@ -13,7 +13,9 @@ var network_neighbours : Dictionary = {}
 var network_nodes : Dictionary = { self : true }
 var network_coordinator : DeviceHub = self
 
-@export var saved_network_links : Array
+@export var saved_network_links : Dictionary
+@export var saved_network_coordinator : NodePath
+@export var saved_network_nodes : Array
 @export var saved_device_connections : Dictionary
 
 func get_neighbours() -> Dictionary:
@@ -154,9 +156,14 @@ func has_network_node(dh : DeviceHub) -> bool:
 	return network_coordinator.network_nodes.has(dh)
 
 func game_loaded():
+	network_coordinator = get_node(saved_network_coordinator)
+	if network_coordinator == self:
+		for path in saved_network_nodes:
+			network_nodes[get_node(path)] = true
+	
 	for path in saved_network_links:
-		var devhub = get_node(path)
-		add_network_node(devhub)
+		var node = get_node(path)
+		network_neighbours[node] = saved_network_links[path]
 	
 	for conname in saved_device_connections:
 		var conrest = saved_device_connections[conname]
@@ -166,9 +173,15 @@ func game_loaded():
 		connect_device_slot(dev, slot, conname)
 
 func game_saving():
+	saved_network_coordinator = network_coordinator.get_path()
+	if self == network_coordinator:
+		saved_network_nodes.clear()
+		for node in network_nodes:
+			saved_network_nodes.append(node.get_path())
+	
 	saved_network_links.clear()
 	for neighbour in network_neighbours:
-		saved_network_links.append(neighbour.get_path())
+		saved_network_links.merge({neighbour.get_path() : network_neighbours[neighbour] })
 	
 	for conname in connections:
 		var connection = connections[conname]
