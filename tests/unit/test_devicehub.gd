@@ -66,6 +66,13 @@ func test_network():
 	assert_eq(dh2.has_network_neighbour(dh3), true)
 	assert_eq(dh3.has_network_neighbour(dh2), true)
 	
+	assert_true(dh1.has_network_node(dh2))
+	assert_true(dh1.has_network_node(dh3))
+	assert_true(dh2.has_network_node(dh1))
+	assert_true(dh2.has_network_node(dh3))
+	assert_false(dh1.has_network_node(dh4))
+	assert_false(dh2.has_network_node(dh4))
+	
 	assert_eq(dh3.add_network_node(dh1), 1)
 	assert_eq(dh1.get_network_size(), 3)
 	assert_eq(dh2.get_network_size(), 3)

@@ -150,6 +150,9 @@ func delete_network_node(node : DeviceHub, all : bool = false) -> int:
 	node.network_nodes = list2
 	return ret1
 
+func has_network_node(dh : DeviceHub) -> bool:
+	return network_coordinator.network_nodes.has(dh)
+
 func game_loaded():
 	for path in saved_network_links:
 		var devhub = get_node(path)
