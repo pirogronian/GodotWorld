@@ -61,6 +61,12 @@ func disconnect_device_slot(cname : String) -> bool:
 	connections.erase(cname)
 	return true
 
+func get_device_connections_array() -> Array:
+	var ret : Array
+	for conn in connections:
+		ret.append(conn)
+	return ret
+
 func register_read(conn : String, reg : String):
 	var conInfo = get_device_connection(conn)
 	if conInfo == null: return
@@ -154,6 +160,12 @@ func delete_network_node(node : DeviceHub, all : bool = false) -> int:
 
 func has_network_node(dh : DeviceHub) -> bool:
 	return network_coordinator.network_nodes.has(dh)
+
+func get_network_nodes_array() -> Array:
+	var ret : Array
+	for node in network_coordinator.network_nodes:
+		ret.append(node)
+	return ret
 
 func node_register_read(node : DeviceHub, conn : String, register : String):
 	if has_network_node(node):
