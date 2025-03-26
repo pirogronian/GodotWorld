@@ -61,15 +61,15 @@ func disconnect_device_slot(cname : String) -> bool:
 	connections.erase(cname)
 	return true
 
-func read_from_register(conn : String, reg : String):
+func register_read(conn : String, reg : String):
 	var conInfo = get_device_connection(conn)
 	if conInfo == null: return
-	return conInfo.device.read_from_register(type, conInfo.slot_num, reg)
+	return conInfo.device.register_read(type, conInfo.slot_num, reg)
 
-func write_to_register(conn : String, reg : String, value):
+func register_write(conn : String, reg : String, value):
 	var conInfo = get_device_connection(conn)
 	if conInfo == null: return
-	return conInfo.device.write_to_register(type, conInfo.slot_num, reg, value)
+	return conInfo.device.register_write(type, conInfo.slot_num, reg, value)
 
 
 func get_network_links_number() -> int:
@@ -154,6 +154,15 @@ func delete_network_node(node : DeviceHub, all : bool = false) -> int:
 
 func has_network_node(dh : DeviceHub) -> bool:
 	return network_coordinator.network_nodes.has(dh)
+
+func node_register_read(node : DeviceHub, conn : String, register : String):
+	if has_network_node(node):
+		return node.register_read(conn, register)
+
+func node_register_write(node : DeviceHub, conn : String, register : String, val):
+	if has_network_node(node):
+		return node.register_write(conn, register, val)
+	return false
 
 func game_loaded():
 	network_coordinator = get_node(saved_network_coordinator)

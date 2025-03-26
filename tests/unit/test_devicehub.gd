@@ -100,15 +100,24 @@ func test_network():
 
 func test_calling_registers():
 	var dh = DeviceHub.new(Device.TransportType.Pipe)
+	var dh2 = DeviceHub.new(Device.TransportType.Pipe)
+	var dh3 = DeviceHub.new(Device.TransportType.Pipe)
 	var TDev = load("res://tests/TestDevice.gd")
 	var d = TDev.new()
 	
 	assert_true(dh.connect_device_slot(d, 1, "TestDevConn"))
-	var v = dh.read_from_register("TestDevConn", "Reg1")
+	var v = dh.register_read("TestDevConn", "Reg1")
 	assert_eq(v, 1)
-	assert_true(dh.write_to_register("TestDevConn", "Reg1", 34))
-	v = dh.read_from_register("TestDevConn", "Reg1")
+	assert_true(dh.register_write("TestDevConn", "Reg1", 34))
+	v = dh.register_read("TestDevConn", "Reg1")
 	assert_eq(v, 34)
+	
+	dh.add_network_node(dh2)
+	assert_false(dh3.node_register_write(dh, "TestDevConn", "Reg1", 51))
+	assert_true(dh2.node_register_write(dh, "TestDevConn", "Reg1", 52))
+	assert_eq(dh2.node_register_read(dh, "TestDevConn", "Reg1"), 52)
+	assert_eq(dh3.node_register_read(dh, "TestDevConn", "Reg1"), null)
+	
 
 func test_saving_network():
 	var sc = Node.new()

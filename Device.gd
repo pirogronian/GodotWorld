@@ -81,7 +81,7 @@ func get_register_value(_slot_type : int, _slot_num : int, _reg_name : String):
 	print("Dummy get_register_value(%d, %d, %s)" % [ _slot_type, _slot_num, _reg_name])
 	pass
 
-func read_from_register(slot_type : int, slot_num : int, reg_name : String):
+func register_read(slot_type : int, slot_num : int, reg_name : String):
 	var si = get_slot_info(slot_type, slot_num)
 	if si and si.data_capable:
 		return get_register_value(slot_type, slot_num, reg_name)
@@ -91,7 +91,7 @@ func set_register_value(_slot_type : int, _slot_num : int, _reg_name : String, _
 	print("Dummy set_register_value(%d, %d, %s)" % [_slot_type, _slot_num, _reg_name], _v)
 	return false
 
-func write_to_register(slot_type : int, slot_num : int, reg_name : String, v) -> bool:
+func register_write(slot_type : int, slot_num : int, reg_name : String, v) -> bool:
 	var si = get_slot_info(slot_type, slot_num)
 	if si and si.data_capable:
 		return set_register_value(slot_type, slot_num, reg_name, v)
