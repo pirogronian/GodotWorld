@@ -6,6 +6,15 @@ class_name DevicesInspectorWindow
 @export var targetNodePath : NodePath
 @export var targetDeviceConn : String
 @export var targetRegisterName : String
+
+const _Container = "Container"
+const _BackButton = "BackButton"
+const _RefreshButton = "RefreshButton"
+const _NodeNameButton = "NodeNameButton"
+const _DeviceConnButton = "DeviceConnButton"
+const _RegisterNameLabel = "RegisterNameLabel"
+const _BottomList = "BottomList"
+
 var container : VBoxContainer
 var backButton : Button
 var refreshButton : Button
@@ -23,39 +32,57 @@ func createSkeleton():
 	#container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	#container.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	add_child(container)
+	container.owner = self
+	
 	var topBarContainer = HBoxContainer.new()
+	container.name = _Container
 	container.add_child(topBarContainer)
+	topBarContainer.owner = container
 	
 	refreshButton = Button.new()
-	refreshButton.set_text("Refresh")
+	refreshButton.name = _RefreshButton
+	refreshButton.text = "Refresh"
 	refreshButton.pressed.connect(update)
 	topBarContainer.add_child(refreshButton)
+	refreshButton.owner = topBarContainer
 	
 	backButton = Button.new()
-	backButton.set_text("Back")
+	backButton.name = _BackButton
+	backButton.text = "Back"
 	backButton.pressed.connect(back)
 	topBarContainer.add_child(backButton)
+	backButton.owner = topBarContainer
 	
 	var placeBarContainer = HBoxContainer.new()
 	topBarContainer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	topBarContainer.add_child(placeBarContainer)
+	placeBarContainer.owner = topBarContainer
 	
 	nodeNameButton = Button.new()
+	nodeNameButton.name = _NodeNameButton
 	placeBarContainer.add_child(nodeNameButton)
+	nodeNameButton.owner = placeBarContainer
 	
 	deviceConnButton = Button.new()
+	deviceConnButton.name = _DeviceConnButton
 	placeBarContainer.add_child(deviceConnButton)
+	deviceConnButton.owner = placeBarContainer
 	
 	registerNameLabel = Label.new()
+	registerNameLabel.name = _RegisterNameLabel
 	placeBarContainer.add_child(registerNameLabel)
+	registerNameLabel.owner = placeBarContainer
 	
 	var scroll = ScrollContainer.new()
 	container.add_child(scroll)
+	scroll.owner = container
 	
 	bottomList = VBoxContainer.new()
+	bottomList.name = _BottomList
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(bottomList)
+	bottomList.owner = scroll
 
 func clearList():
 	while bottomList.get_child_count():
@@ -189,4 +216,16 @@ func _init():
 	if firstRun:
 		createSkeleton()
 		firstRun = false
-	
+
+func _ready():
+	update()
+
+func game_loaded():
+	print("Inspector: Restoring")
+	container = find_child(_Container) as VBoxContainer
+	backButton = find_child(_BackButton) as Button
+	refreshButton = find_child(_RefreshButton) as Button
+	nodeNameButton = find_child(_NodeNameButton) as Button
+	deviceConnButton = find_child(_DeviceConnButton) as Button
+	registerNameLabel = find_child(_RegisterNameLabel) as Label
+	bottomList = find_child(_BottomList) as VBoxContainer

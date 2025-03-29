@@ -1,9 +1,13 @@
 extends Node3D
 
+@export var firstRun = true
+
 func _init():
 	pass
 
 func _ready():
+	if not firstRun: return
+	firstRun = false
 	var dh1 = DeviceHub.new(Device.TransportType.Fiber)
 	var dh2 = DeviceHub.new(Device.TransportType.Fiber)
 	var dh3 = DeviceHub.new(Device.TransportType.Fiber)
@@ -32,6 +36,15 @@ func _ready():
 	add_child(d2)
 	add_child(d3)
 	add_child(d4)
+	
+	dh1.owner = self
+	dh2.owner = self
+	dh3.owner = self
+	dh4.owner = self
+	d1.owner = self
+	d2.owner = self
+	d3.owner = self
+	d4.owner = self
 	
 	var di = get_node("DevicesInspectorWindow") as DevicesInspectorWindow
 	di.update()
