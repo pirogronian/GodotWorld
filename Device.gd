@@ -101,8 +101,8 @@ func register_write(slot_type : int, slot_num : int, reg_name : String, v) -> bo
 func is_register_readonly(_slot_type : int, _slot_num : int, _reg_name : String) -> bool:
 	return true
 
-func get_registers(_slot_type : int, _slot_num : int) -> Dictionary:
-	return {}
+func get_registers(_slot_type : int, _slot_num : int) -> Array:
+	return Array()
 
 func is_slot_accepting_data(slot_type : int, slot_num : int) -> bool:
 	var si = get_slot_info(slot_type, slot_num)

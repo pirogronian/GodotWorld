@@ -16,6 +16,13 @@ func _init():
 	#print("Wire slots: %d" % get_slots_number(TransportType.Wire))
 	#print("Fiber slots: %d" % get_slots_number(TransportType.Fiber))
 
+func get_registers(_slot_type : int, _slot_num : int) -> Array:
+	var ret = Array(["Reg1", "Reg2", "Reg3"])
+	#ret.append("Reg1")
+	#ret.append("Reg2")
+	#ret.append("Reg3")
+	return ret
+
 func get_register_value(_slot_type : int, _slot_num : int, _reg_name : String):
 	match _reg_name:
 		"Reg1": return reg1_val

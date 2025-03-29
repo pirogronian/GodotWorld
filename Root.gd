@@ -232,6 +232,7 @@ func quit():
 func _ready():
 	addNewGameButton("DefaultNew")
 	addNewGameButton("DefaultNew2")
+	addNewGameButton("DefaultNew3")
 #	var cd = getSaveFileConfirmDialog()
 #	if cd == null:
 #		print("Cannot find save confirmation sub-dialog")

@@ -77,6 +77,9 @@ func register_write(conn : String, reg : String, value):
 	if conInfo == null: return
 	return conInfo.device.register_write(type, conInfo.slot_num, reg, value)
 
+func get_registers_dictionary(conName : String):
+	var con = get_device_connection(conName)
+	return con.device.get_registers(type, con.slot_num)
 
 func get_network_links_number() -> int:
 	return network_neighbours.size()

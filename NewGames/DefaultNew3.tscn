@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfmltdw1h563e"]
+
+[ext_resource type="Script" uid="uid://bsc8rxy7e5yvg" path="res://NewGames/DefaultNew3.gd" id="1_16gao"]
+[ext_resource type="Script" uid="uid://drfwqak80qjm7" path="res://DevicesInspectorWindow.gd" id="1_pbdqj"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_16gao")
+
+[node name="DevicesInspectorWindow" type="Window" parent="."]
+script = ExtResource("1_pbdqj")
+metadata/_custom_type_script = "uid://drfwqak80qjm7"
