@@ -14,6 +14,8 @@ const _NodeNameButton = "NodeNameButton"
 const _DeviceConnButton = "DeviceConnButton"
 const _RegisterNameLabel = "RegisterNameLabel"
 const _BottomList = "BottomList"
+const _RegisterWidget = "RegisterWidget"
+const _RegisterValueLabel = "RegisterValueLabel"
 
 var container : VBoxContainer
 var backButton : Button
@@ -22,6 +24,11 @@ var nodeNameButton : Button
 var deviceConnButton : Button
 var registerNameLabel : Label
 var bottomList : VBoxContainer
+var registerWidget : VBoxContainer
+var registerValueLabel : Label
+#var registerTextEdit : TextEdit
+#var registerSpinBox : SpinBox
+#var registerTypeMenu : OptionButton
 #var table : Tree
 
 func onResize():
@@ -73,6 +80,16 @@ func createSkeleton():
 	placeBarContainer.add_child(registerNameLabel)
 	registerNameLabel.owner = placeBarContainer
 	
+	registerWidget = VBoxContainer.new()
+	registerWidget.name = _RegisterWidget
+	container.add_child(registerWidget)
+	registerWidget.owner = container
+	
+	registerValueLabel = Label.new()
+	registerValueLabel.name = _RegisterValueLabel
+	registerWidget.add_child(registerValueLabel)
+	registerValueLabel.owner = registerWidget
+	
 	var scroll = ScrollContainer.new()
 	container.add_child(scroll)
 	scroll.owner = container
@@ -94,6 +111,8 @@ func clear():
 	nodeNameButton.visible = false
 	deviceConnButton.visible = false
 	registerNameLabel.visible = false
+	
+	registerWidget.visible = false
 	
 	clearList()
 
@@ -128,8 +147,16 @@ func populateDevice(devCon : String):
 		bottomList.add_child(button)
 		print("Added reg: ", reg)
 
-func populateRegister(val):
-	pass
+func populateRegister():
+	var baseNode = get_node(baseNodePath)
+	var targetNode = get_node(targetNodePath)
+	if baseNode == null or targetNode == null: return
+	var val = baseNode.node_register_read(targetNode, targetDeviceConn, targetRegisterName)
+	registerWidget.visible = true
+	if val is String:
+		registerValueLabel.text = val
+	else:
+		registerValueLabel.text = str(val)
 
 func enterTargetNode(path : String):
 	print("Entering ", path)
@@ -152,7 +179,7 @@ func enterTargetRegister(regName : String):
 	targetRegisterName = regName
 	registerNameLabel.text = regName
 	registerNameLabel.visible = true
-	populateRegister(regName)
+	populateRegister()
 
 func clicked(value : String):
 	print("Clicked: ", value)
@@ -209,7 +236,7 @@ func update():
 	var reg = targetNode.register_read(targetDeviceConn, targetRegisterName)
 	registerNameLabel.text = targetRegisterName
 	registerNameLabel.visible = true
-	populateRegister(reg)
+	populateRegister()
 
 func _init():
 	size_changed.connect(onResize)
@@ -217,8 +244,8 @@ func _init():
 		createSkeleton()
 		firstRun = false
 
-func _ready():
-	update()
+#func _ready():
+	#update()
 
 func game_loaded():
 	print("Inspector: Restoring")
@@ -229,3 +256,5 @@ func game_loaded():
 	deviceConnButton = find_child(_DeviceConnButton) as Button
 	registerNameLabel = find_child(_RegisterNameLabel) as Label
 	bottomList = find_child(_BottomList) as VBoxContainer
+	registerWidget = find_child(_RegisterWidget) as VBoxContainer
+	registerValueLabel = find_child(_RegisterValueLabel)
