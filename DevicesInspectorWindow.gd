@@ -6,6 +6,7 @@ class_name DevicesInspectorWindow
 @export var targetNodePath : NodePath
 @export var targetDeviceConn : String
 @export var targetRegisterName : String
+@export var registerType : int
 
 const _Container = "Container"
 const _BackButton = "BackButton"
@@ -13,9 +14,19 @@ const _RefreshButton = "RefreshButton"
 const _NodeNameButton = "NodeNameButton"
 const _DeviceConnButton = "DeviceConnButton"
 const _RegisterNameLabel = "RegisterNameLabel"
+const _Scroll = "Scroll"
 const _BottomList = "BottomList"
 const _RegisterWidget = "RegisterWidget"
 const _RegisterValueLabel = "RegisterValueLabel"
+const _RegisterTextEdit = "RegisterTextEdit"
+const _RegisterSpinBox = "RegisterSpinBox"
+const _RegisterOptionButton = "RegisterOptionButton"
+const _RegisterCopyButton = "RegisterCopyButton"
+const _RegisterSetButton = "RegisterSetButton"
+
+const TypeInt = 1
+const TypeFloat = 2
+const TypeString = 3
 
 var container : VBoxContainer
 var backButton : Button
@@ -23,13 +34,15 @@ var refreshButton : Button
 var nodeNameButton : Button
 var deviceConnButton : Button
 var registerNameLabel : Label
+var scroll : ScrollContainer
 var bottomList : VBoxContainer
 var registerWidget : VBoxContainer
 var registerValueLabel : Label
-#var registerTextEdit : TextEdit
-#var registerSpinBox : SpinBox
-#var registerTypeMenu : OptionButton
-#var table : Tree
+var registerTextEdit : TextEdit
+var registerSpinBox : SpinBox
+var registerOptionButton : OptionButton
+var registerCopyButton : Button
+var registerSetButton : Button
 
 func onResize():
 	container.size = size
@@ -82,6 +95,7 @@ func createSkeleton():
 	
 	registerWidget = VBoxContainer.new()
 	registerWidget.name = _RegisterWidget
+	registerWidget.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	container.add_child(registerWidget)
 	registerWidget.owner = container
 	
@@ -90,7 +104,51 @@ func createSkeleton():
 	registerWidget.add_child(registerValueLabel)
 	registerValueLabel.owner = registerWidget
 	
-	var scroll = ScrollContainer.new()
+	var buttonsContainer = HBoxContainer.new()
+	registerWidget.add_child(buttonsContainer)
+	buttonsContainer.owner = registerWidget
+	
+	registerOptionButton = OptionButton.new()
+	registerOptionButton.name = _RegisterOptionButton
+	registerOptionButton.text = "Type"
+	registerOptionButton.add_item("Int", TypeInt)
+	registerOptionButton.add_item("Float", TypeFloat)
+	registerOptionButton.add_item("String", TypeString)
+	registerOptionButton.item_selected.connect(typeSelected)
+	buttonsContainer.add_child(registerOptionButton)
+	registerOptionButton.owner = buttonsContainer
+	
+	registerCopyButton = Button.new()
+	registerCopyButton.name = _RegisterCopyButton
+	registerCopyButton.text = "Copy"
+	registerCopyButton.pressed.connect(copyRegisterValue)
+	buttonsContainer.add_child(registerCopyButton)
+	registerCopyButton.owner = buttonsContainer
+	
+	registerSetButton = Button.new()
+	registerSetButton.name = _RegisterSetButton
+	registerSetButton.text = "Set"
+	registerSetButton.pressed.connect(setRegisterValue)
+	buttonsContainer.add_child(registerSetButton)
+	registerSetButton.owner = buttonsContainer
+	
+	registerTextEdit = TextEdit.new()
+	registerTextEdit.name = _RegisterTextEdit
+	registerTextEdit.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	registerWidget.add_child(registerTextEdit)
+	registerTextEdit.owner = registerWidget
+	registerTextEdit.visible = false
+	
+	registerSpinBox = SpinBox.new()
+	registerSpinBox.name = _RegisterSpinBox
+	registerSpinBox.allow_greater = true
+	registerSpinBox.allow_lesser = true
+	registerSpinBox.step = 0
+	registerWidget.add_child(registerSpinBox)
+	registerSpinBox.owner = registerWidget
+	registerSpinBox.visible = false
+	
+	scroll = ScrollContainer.new()
 	container.add_child(scroll)
 	scroll.owner = container
 	
@@ -148,6 +206,7 @@ func populateDevice(devCon : String):
 		print("Added reg: ", reg)
 
 func populateRegister():
+	scroll.visible = false
 	var baseNode = get_node(baseNodePath)
 	var targetNode = get_node(targetNodePath)
 	if baseNode == null or targetNode == null: return
@@ -157,6 +216,8 @@ func populateRegister():
 		registerValueLabel.text = val
 	else:
 		registerValueLabel.text = str(val)
+	
+	typeSelected(registerOptionButton.selected)
 
 func enterTargetNode(path : String):
 	print("Entering ", path)
@@ -181,6 +242,63 @@ func enterTargetRegister(regName : String):
 	registerNameLabel.visible = true
 	populateRegister()
 
+func typeSelected(index : int):
+	registerType = registerOptionButton.get_selected_id()
+	if registerType == TypeInt:
+		selectTypeInt()
+		return
+	if registerType == TypeFloat:
+		selectTypeFloat()
+		return
+	if registerType == TypeString:
+		selectTypeString()
+		return
+	selectTypeUnknown()
+
+func selectTypeInt():
+	registerTextEdit.visible = false
+	registerSpinBox.visible = true
+
+func selectTypeFloat():
+	registerTextEdit.visible = false
+	registerSpinBox.visible = true
+
+func selectTypeString():
+	registerTextEdit.visible = true
+	registerSpinBox.visible = false
+
+func selectTypeUnknown():
+	registerTextEdit.visible = false
+	registerSpinBox.visible = false
+
+func copyRegisterValue():
+	var val = registerValueLabel.text
+	if registerType == TypeInt:
+		registerSpinBox.value = val as int
+	if registerType == TypeFloat:
+		registerSpinBox.value = val as float
+	if registerType == TypeString:
+		registerTextEdit.text = val as String
+
+func setRegisterValue():
+	var val
+	if registerType == TypeInt:
+		val = registerSpinBox.get_line_edit().text as int
+	if registerType == TypeFloat:
+		val = registerSpinBox.get_line_edit().text as float
+	if registerType == TypeString:
+		val = registerTextEdit.text
+	var baseNode = get_node(baseNodePath)
+	var targetNode = get_node(targetNodePath)
+	if baseNode == null or targetNode == null:
+		print("Wrong nodes to set register: ", baseNode, targetNode)
+		return
+	var ret = baseNode.node_register_write(targetNode, targetDeviceConn, targetRegisterName, val)
+	if not ret:
+		print("Writing register failed!")
+	else:
+		update()
+
 func clicked(value : String):
 	print("Clicked: ", value)
 
@@ -199,6 +317,7 @@ func back():
 
 func update():
 	clear()
+	scroll.visible = true
 	if baseNodePath.is_empty(): return
 	var baseNode = get_node(baseNodePath) as DeviceHub
 	#if node == null: return
@@ -255,6 +374,12 @@ func game_loaded():
 	nodeNameButton = find_child(_NodeNameButton) as Button
 	deviceConnButton = find_child(_DeviceConnButton) as Button
 	registerNameLabel = find_child(_RegisterNameLabel) as Label
+	scroll = find_child(_Scroll) as ScrollContainer
 	bottomList = find_child(_BottomList) as VBoxContainer
 	registerWidget = find_child(_RegisterWidget) as VBoxContainer
-	registerValueLabel = find_child(_RegisterValueLabel)
+	registerValueLabel = find_child(_RegisterValueLabel) as Label
+	registerOptionButton = find_child(_RegisterOptionButton) as OptionButton
+	registerCopyButton = find_child(_RegisterCopyButton) as Button
+	registerSetButton = find_child(_RegisterSetButton) as Button
+	registerTextEdit = find_child(_RegisterTextEdit) as TextEdit
+	registerSpinBox = find_child(_RegisterSpinBox) as SpinBox

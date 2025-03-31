@@ -2,6 +2,7 @@ extends Device
 
 var reg1_val : int = 1
 var reg2_val : String = "String wartość"
+var reg4_val : float = 0.123
 
 func _init():
 	super()
@@ -17,10 +18,7 @@ func _init():
 	#print("Fiber slots: %d" % get_slots_number(TransportType.Fiber))
 
 func get_registers(_slot_type : int, _slot_num : int) -> Array:
-	var ret = Array(["Reg1", "Reg2", "Reg3"])
-	#ret.append("Reg1")
-	#ret.append("Reg2")
-	#ret.append("Reg3")
+	var ret = Array(["Reg1", "Reg2", "Reg3", "Reg4"])
 	return ret
 
 func get_register_value(_slot_type : int, _slot_num : int, _reg_name : String):
@@ -28,12 +26,20 @@ func get_register_value(_slot_type : int, _slot_num : int, _reg_name : String):
 		"Reg1": return reg1_val
 		"Reg2": return reg2_val
 		"Reg3": return 3.14
+		"Reg4": return reg4_val
 		_: return null
 
 func set_register_value(_slot_type : int, _slot_num : int, _reg_name : String, _v) -> bool:
 	match _reg_name:
-		"Reg1": reg1_val = _v
-		"Reg2": reg2_val = _v
+		"Reg1":
+			if _v is int: reg1_val = _v
+			else: return false
+		"Reg2":
+			if _v is String: reg2_val = _v
+			else: return false
+		"Reg4":
+			if _v is float: reg4_val = _v
+			else: return false
 		_: return false
 	return true
 
@@ -43,6 +49,7 @@ func is_register_readonly(_slot_type : int, _slot_num : int, _reg_name : String)
 	match _reg_name:
 		"Reg1": return false
 		"Reg2": return false
+		"Reg4": return false
 		_: return true
 #	return true
 
